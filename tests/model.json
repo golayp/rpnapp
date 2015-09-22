@@ -1,0 +1,46 @@
+{
+   "Id":12,
+   "Title":"Title",
+   "Duration":15,
+   "Items":[
+      {
+         "Id":3015,
+         "Description":"test 2",
+         "NavigationUrl":"http://www.google.ch"
+      },
+      {
+         "Id":3012,
+         "Description":"test 3",
+         "NavigationUrl":"http://www.google.ch"
+      }
+   ],
+   "MetaTypes":[
+
+   ],
+   "Publications":[
+      {
+         "Id":1004,
+         "From":"\/Date(1442181600000)\/",
+         "To":"\/Date(1443564000000)\/",
+         "Target":"FRA9B2|GRP|JJR"
+      },
+      {
+         "Id":1005,
+         "From":null,
+         "To":null,
+         "Target":"FRA9A1|GRP|JJR"
+      },
+      {
+         "Id":1006,
+         "From":null,
+         "To":null,
+         "Target":"10MA2|ENS|JJR"
+      },
+      {
+         "Id":1007,
+         "From":null,
+         "To":null,
+         "Target":"FRA9B2|GRP|JJR"
+      }
+   ]
+}
