@@ -8,6 +8,7 @@
  */
 
 var rpnapp = (function() {
+    
     var opts;
     var viewModel;
     var lbls;
@@ -66,7 +67,7 @@ var rpnapp = (function() {
         }
         buildUi();
         bindUiEvents();
-        getModel();
+        loadModel();
         log('rpnapp successfully initied');
     };
     
@@ -89,7 +90,7 @@ var rpnapp = (function() {
         if($('#saveBtn').length){
             saveBtn=$('#saveBtn');
         }else{
-            saveBtn=$('<button class="btn btn-primary" id="saveBtn" data-bind="visible: (tracker().somethingHasChanged() || '+opts.modelKeyAttribute+'()==0)"><span class="glyphicon glyphicon-save"></span> '+lbls.save+'</button>');
+            saveBtn=$('<button class="btn btn-primary" id="saveBtn" data-bind="enable: (tracker().somethingHasChanged() || '+opts.modelKeyAttribute+'()==0)"><span class="glyphicon glyphicon-save"></span> '+lbls.save+'</button>');
             toolbar.find('.btn-group.leftsided').append(saveBtn);
             buildToolbar=true;
         }
@@ -98,7 +99,7 @@ var rpnapp = (function() {
         if($('#dropBtn').length){
             dropBtn=$('#saveBtn');
         }else{
-            dropBtn=$('<button class="btn btn-danger" id="dropBtn" data-bind="visible: '+opts.modelKeyAttribute+'()!=0"><span class="glyphicon glyphicon-trash"></span> '+lbls.drop+'</button>');
+            dropBtn=$('<button class="btn btn-danger" id="dropBtn" data-bind="enable: '+opts.modelKeyAttribute+'()!=0"><span class="glyphicon glyphicon-trash"></span> '+lbls.drop+'</button>');
             toolbar.find('.btn-group.pull-right').append(dropBtn);
             buildToolbar=true;
         }
@@ -112,7 +113,7 @@ var rpnapp = (function() {
     
     var bindUiEvents=function(){
         saveBtn.click(function(){
-            if(opts.save(viewModel)){
+            if(opts.save(getModel())){
                 viewModel.tracker().markCurrentStateAsClean();
             }
         });
@@ -126,7 +127,7 @@ var rpnapp = (function() {
         });
     };
     
-    var getModel=function(){
+    var loadModel=function(){
         //Model can be given directly
         if(typeof(opts.model)==='object'){
             bindModel(opts.model);
@@ -143,6 +144,10 @@ var rpnapp = (function() {
                 });
             }
         }
+    };
+    
+    var getModel=function(){
+        return ko.mapping.toJS(viewModel);
     };
     
     var bindModel=function(mod){
@@ -190,7 +195,6 @@ var rpnapp = (function() {
         }
     };
     
-    
     var launchModal=function(modalOpts,todoOnValidation) {
         if (modalOpts==null || _.isUndefined(modalOpts)) {
             modalOpts = {
@@ -220,8 +224,10 @@ var rpnapp = (function() {
     
     return {
         launchModal:launchModal,
+        getModel:getModel,
         markModelAsClean:markModelAsClean,
         isDirty:isDirty,
+        log:log,
         init: init
     };
 })();

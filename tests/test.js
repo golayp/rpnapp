@@ -39,6 +39,7 @@ require(['jquery','underscore','bootstrap', 'knockout', 'komapping','rpnapp'], f
             },
             save:function(mod){
                 //alert(JSON.stringify(mod));
+                rpnapp.log(JSON.stringify(mod));
                 return true;
             },
             addCustomBinding:function(viewModel){
@@ -56,6 +57,18 @@ require(['jquery','underscore','bootstrap', 'knockout', 'komapping','rpnapp'], f
                         viewModel.Items.splice(i, 2, items[i + 1], items[i]);
                     }
                 };
+                viewModel.addItem=function(){
+                    viewModel.Items.push(
+                        ko.mapping.fromJS(
+                        {
+                            Id:-viewModel.Items().length,
+                            Description:"new item",
+                            NavigationUrl:"http://www.google.ch"
+                        }));
+                };
+                viewModel.removeItem=function(item){
+                    viewModel.Items.remove(item);
+                }
             }
         });
     });

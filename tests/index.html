@@ -26,7 +26,7 @@
                     <div class="panel panel-default">
                         <!-- Default panel contents -->
                         <div class="panel-body">
-                            <span class="lead">Ressources</span>
+                            <span class="lead">Ressources</span> <button id="addRessource" class="btn btn-sm btn-default" data-bind="click:addItem"><span class="glyphicon glyphicon-plus"></span></button>
                         </div>
                         <table class="table table-condensed">
                             <tbody data-bind="foreach: Items">
@@ -39,8 +39,8 @@
                                                 <button class="btn btn-default btn-xs movedownitem" data-bind="click: $parent.moveDown ,disable: ($index() ===  $parent.Items().length-1)"><span class="glyphicon glyphicon-chevron-down"></span></button>
                                             </div>
                                             <div class="btn-group">
-                                                <button class="btn btn-default btn-xs edititem"><span class="glyphicon glyphicon-pencil"></span></button>
-                                                <button class="btn btn-default btn-xs deleteitem"><span class="glyphicon glyphicon-trash "></span></button>
+                                                <button class="btn btn-default btn-xs edititem" data-toggle="modal" data-bind="attr: {'data-target': '#modal_' + Id()}"><span class="glyphicon glyphicon-pencil"></span></button>
+                                                <button class="btn btn-default btn-xs deleteitem" data-bind="click:$parent.removeItem"><span class="glyphicon glyphicon-trash "></span></button>
                                             </div>
                                         </div>
                                     </td>
@@ -51,5 +51,30 @@
                 </div>
             </div>
         </div>
+        <!-- ko foreach: Items -->
+            <div class="modal" data-bind="attr: {'id': 'modal_' + Id()}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Ressource</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="itemdescription">Description</label>
+                                <input type="text" class="form-control" placeholder="Description" data-bind="value: Description" />
+                            </div>
+                            <div class="form-group">
+                                <label for="itemurl">Adresse web (URL)</label>
+                                <input type="url" class="form-control" placeholder="Url" data-bind="value: NavigationUrl" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span> Close</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        <!-- /ko -->
     </body>
 </html>
