@@ -51,7 +51,10 @@ var rpnapp = (function() {
             modelKeyAttribute:'Id',
             track: true,
             language: "en",
-            debug: false
+            debug: false,
+            binded:function(){
+                log('model binded event');
+            }
         });
         opts = options;
         
@@ -82,49 +85,50 @@ var rpnapp = (function() {
             backBtn=$('#backBtn');
         }else{
             backBtn=$('<button class="btn btn-default" id="backBtn"><span class="glyphicon glyphicon-chevron-left"></span>  '+lbls.back+'</button>');
-            toolbar.find('.btn-group.leftsided').prepend(backBtn);
+            toolbar.find('.btn-group.leftsided').append(backBtn);
             buildToolbar=true;
         }
-        
-        //SaveBtn
-        if($('#saveBtn').length){
-            saveBtn=$('#saveBtn');
-        }else{
-            saveBtn=$('<button class="btn btn-primary" id="saveBtn" data-bind="enable: (tracker().somethingHasChanged() || '+opts.modelKeyAttribute+'()==0)"><span class="glyphicon glyphicon-save"></span> '+lbls.save+'</button>');
-            toolbar.find('.btn-group.leftsided').append(saveBtn);
-            buildToolbar=true;
+        if(opts.track){
+            //SaveBtn
+            if($('#saveBtn').length){
+                saveBtn=$('#saveBtn');
+            }else{
+                saveBtn=$('<button class="btn btn-primary" id="saveBtn" data-bind="enable: (tracker().somethingHasChanged() || '+opts.modelKeyAttribute+'()==0)"><span class="glyphicon glyphicon-save"></span> '+lbls.save+'</button>');
+                toolbar.find('.btn-group.leftsided').append(saveBtn);
+                buildToolbar=true;
+            }
+            
+            //DropBtn
+            if($('#dropBtn').length){
+                dropBtn=$('#saveBtn');
+            }else{
+                dropBtn=$('<button class="btn btn-danger" id="dropBtn" data-bind="enable: '+opts.modelKeyAttribute+'()!=0"><span class="glyphicon glyphicon-trash"></span> '+lbls.drop+'</button>');
+                toolbar.find('.btn-group.pull-right').append(dropBtn);
+                buildToolbar=true;
+            }
         }
-        
-        //DropBtn
-        if($('#dropBtn').length){
-            dropBtn=$('#saveBtn');
-        }else{
-            dropBtn=$('<button class="btn btn-danger" id="dropBtn" data-bind="enable: '+opts.modelKeyAttribute+'()!=0"><span class="glyphicon glyphicon-trash"></span> '+lbls.drop+'</button>');
-            toolbar.find('.btn-group.pull-right').append(dropBtn);
-            buildToolbar=true;
-        }
-
         if(buildToolbar){
             opts.location.append(toolbar);
         }
-        
-        
     };
     
     var bindUiEvents=function(){
-        saveBtn.click(function(){
-            if(opts.save(getModel())){
-                viewModel.tracker().markCurrentStateAsClean();
-            }
-        });
         backBtn.click(function(){
-            opts.back(viewModel);
+            opts.back(getModel());
         });
-        dropBtn.click(function(){
-            launchModal(null,function(){
-                opts.drop(viewModel);
+        if(opts.track){
+            saveBtn.click(function(){
+                if(opts.save(getModel())){
+                    viewModel.tracker().markCurrentStateAsClean();
+                }
             });
-        });
+           
+            dropBtn.click(function(){
+                launchModal(null,function(){
+                    opts.drop(getModel());
+                });
+            });
+        }
     };
     
     var loadModel=function(){
@@ -157,6 +161,7 @@ var rpnapp = (function() {
             viewModel.tracker = new changeTracker(viewModel);
         }
         ko.applyBindings(viewModel);
+        opts.binded();
         log("model loaded successfully and binded to ui");
     };
     

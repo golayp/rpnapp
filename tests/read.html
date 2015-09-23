@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>rpnapp test</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="https://cdn.rawgit.com/golayp/edicons/master/generated/style.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.js"></script>
+        <script src="read.js"></script>
+    </head>
+    <body>
+        <div class="container" style="display: none" data-bind="visible: true">
+            <h2 data-bind="text:Title">Editer</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <dl class="dl-horizontal">
+                        <dt>Title:</dt>
+                        <dd data-bind="text:Title"></dd>
+                        <dt>Duration:</dt>
+                        <dd data-bind="text:Duration"></dd>
+                        <dt>Ressources</dt>
+                        <dd class="list-unstyled">
+                            <ul class="list-unstyled" data-bind="foreach: Items">
+                                <li><a href="#" data-toggle="modal" data-bind="attr: {'data-target': '#modal_' + Id()}"><!--ko text: Description--><!--/ko--></a></li>    
+                            </ul>
+                        </dd>
+                    </dl>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- ko foreach: Items -->
+            <div class="modal" data-bind="attr: {'id': 'modal_' + Id()}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Ressource</h4>
+                        </div>
+                        <div class="modal-body">
+                            <dl class="dl-horizontal">
+                                <dt>Description</dt>
+                                <dd data-bind="text:Description" />
+                                <dt>NavigationUrl</dt>
+                                <dd>
+                                    <a  data-bind="attr:{href:NavigationUrl},text:NavigationUrl" target="_blank"></a>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span> Close</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        <!-- /ko -->
+    </body>
+</html>

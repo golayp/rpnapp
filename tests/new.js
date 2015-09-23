@@ -33,12 +33,9 @@ require(['jquery','underscore','bootstrap', 'knockout', 'komapping','rpnapp'], f
     $(document).ready(function(){
         rpnapp.init({
             debug:true,
+            model:'newmodel.json',
             location:$('.container'),
-            drop:function(mod){
-                //alert(JSON.stringify(mod));
-            },
             save:function(mod){
-                //alert(JSON.stringify(mod));
                 rpnapp.log(JSON.stringify(mod));
                 return true;
             },
@@ -63,7 +60,7 @@ require(['jquery','underscore','bootstrap', 'knockout', 'komapping','rpnapp'], f
                         {
                             Id:-viewModel.Items().length,
                             Description:"new item",
-                            NavigationUrl:"http://www.google.ch"
+                            NavigationUrl:"http://www.google.com"
                         }));
                 };
                 viewModel.removeItem=function(item){
