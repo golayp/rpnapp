@@ -44,17 +44,18 @@ var rpnapp = (function() {
             back:function(){
                 window.history.go(-1);
             },
+            binded:function(){
+                log('model binded event');
+            },
             addCustomBinding:function(vm){
                 
             },
             model:'model.json',
             modelKeyAttribute:'Id',
             track: true,
+            addToolbar:true,
             language: "en",
-            debug: false,
-            binded:function(){
-                log('model binded event');
-            }
+            debug: false
         });
         opts = options;
         
@@ -76,58 +77,61 @@ var rpnapp = (function() {
     
     var buildUi=function(){
         //Based on convention
-        //toolbar is made of 3 buttons saveBtn and backBtn and dropBtn
-        var buildToolbar=false;
-        var toolbar=$('<div class="row"><div class="col-md-12"><div class="btn-toolbar"><div class="btn-group leftsided"></div><div class="btn-group pull-right"></div></div></div></div>');
-        
-        //BackBtn
-        if($('#backBtn').length){
-            backBtn=$('#backBtn');
-        }else{
-            backBtn=$('<button class="btn btn-default" id="backBtn"><span class="glyphicon glyphicon-chevron-left"></span>  '+lbls.back+'</button>');
-            toolbar.find('.btn-group.leftsided').append(backBtn);
-            buildToolbar=true;
-        }
-        if(opts.track){
-            //SaveBtn
-            if($('#saveBtn').length){
-                saveBtn=$('#saveBtn');
-            }else{
-                saveBtn=$('<button class="btn btn-primary" id="saveBtn" data-bind="enable: (tracker().somethingHasChanged() || '+opts.modelKeyAttribute+'()==0)"><span class="glyphicon glyphicon-save"></span> '+lbls.save+'</button>');
-                toolbar.find('.btn-group.leftsided').append(saveBtn);
-                buildToolbar=true;
-            }
+        if(opts.addToolbar){
+            //toolbar is made of 3 buttons saveBtn and backBtn and dropBtn
+            var buildToolbar=false;
+            var toolbar=$('<div class="row"><div class="col-md-12"><div class="btn-toolbar"><div class="btn-group leftsided"></div><div class="btn-group pull-right"></div></div></div></div>');
             
-            //DropBtn
-            if($('#dropBtn').length){
-                dropBtn=$('#saveBtn');
+            //BackBtn
+            if($('#backBtn').length){
+                backBtn=$('#backBtn');
             }else{
-                dropBtn=$('<button class="btn btn-danger" id="dropBtn" data-bind="enable: '+opts.modelKeyAttribute+'()!=0"><span class="glyphicon glyphicon-trash"></span> '+lbls.drop+'</button>');
-                toolbar.find('.btn-group.pull-right').append(dropBtn);
+                backBtn=$('<button class="btn btn-default" id="backBtn"><span class="glyphicon glyphicon-chevron-left"></span>  '+lbls.back+'</button>');
+                toolbar.find('.btn-group.leftsided').append(backBtn);
                 buildToolbar=true;
             }
-        }
-        if(buildToolbar){
-            opts.location.append(toolbar);
+            if(opts.track){
+                //SaveBtn
+                if($('#saveBtn').length){
+                    saveBtn=$('#saveBtn');
+                }else{
+                    saveBtn=$('<button class="btn btn-primary" id="saveBtn" data-bind="enable: (tracker().somethingHasChanged() || '+opts.modelKeyAttribute+'()==0)"><span class="glyphicon glyphicon-save"></span> '+lbls.save+'</button>');
+                    toolbar.find('.btn-group.leftsided').append(saveBtn);
+                    buildToolbar=true;
+                }
+                
+                //DropBtn
+                if($('#dropBtn').length){
+                    dropBtn=$('#saveBtn');
+                }else{
+                    dropBtn=$('<button class="btn btn-danger" id="dropBtn" data-bind="enable: '+opts.modelKeyAttribute+'()!=0"><span class="glyphicon glyphicon-trash"></span> '+lbls.drop+'</button>');
+                    toolbar.find('.btn-group.pull-right').append(dropBtn);
+                    buildToolbar=true;
+                }
+            }
+            if(buildToolbar){
+                opts.location.append(toolbar);
+            }
         }
     };
     
     var bindUiEvents=function(){
-        backBtn.click(function(){
-            opts.back(getModel());
-        });
-        if(opts.track){
-            saveBtn.click(function(){
-                if(opts.save(getModel())){
-                    viewModel.tracker().markCurrentStateAsClean();
-                }
+        if(opts.addToolbar){
+            backBtn.click(function(){
+                opts.back(getModel());
             });
-           
-            dropBtn.click(function(){
-                launchModal(null,function(){
-                    opts.drop(getModel());
+            if(opts.track){
+                saveBtn.click(function(){
+                    if(opts.save(getModel())){
+                        viewModel.tracker().markCurrentStateAsClean();
+                    }
                 });
-            });
+                dropBtn.click(function(){
+                    launchModal(null,function(){
+                        opts.drop(getModel());
+                    });
+                });
+            }
         }
     };
     
@@ -154,6 +158,7 @@ var rpnapp = (function() {
         return ko.mapping.toJS(viewModel);
     };
     
+    
     var bindModel=function(mod){
         viewModel = ko.mapping.fromJS(mod);
         opts.addCustomBinding(viewModel);
@@ -163,6 +168,10 @@ var rpnapp = (function() {
         ko.applyBindings(viewModel);
         opts.binded();
         log("model loaded successfully and binded to ui");
+    };
+    
+    var updateKeyAttribute = function(newKey){
+        viewModel[opts.modelKeyAttribute](newKey);
     };
     
     var changeTracker=function(objectToTrack, hashFunction) {
@@ -182,7 +191,7 @@ var rpnapp = (function() {
     
     var isDirty=function(){
         if(opts.track){
-            return viewModel.tracker().somethingHasChanged;
+            return viewModel.tracker().somethingHasChanged();
         }
         return false;
     };
@@ -215,7 +224,7 @@ var rpnapp = (function() {
             }
         });
         $('#rpnappmodal').remove();
-        //Better use template engine... but unfortunatly... not the time to give a try
+        //Better use template engine... but unfortunately... not the time to give a try
         var modal=$('<div class="modal" id="rpnappmodal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title">'+modalOpts.title+'</h4></div><div class="modal-body">'+modalOpts.content+'</div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button></div></div></div></div>');
         var validationBtn = $('<button type="button" class="btn btn-' + modalOpts.validationBtn.layout + '">' + modalOpts.validationBtn.label + '</button>')
         $('.modal-footer', modal).append(validationBtn);
@@ -228,6 +237,7 @@ var rpnapp = (function() {
     };
     
     return {
+        updateKeyAttribute:updateKeyAttribute,
         launchModal:launchModal,
         getModel:getModel,
         markModelAsClean:markModelAsClean,

@@ -68,7 +68,7 @@ require(['jquery','underscore','bootstrap', 'knockout', 'komapping','rpnapp'], f
                 };
                 viewModel.removeItem=function(item){
                     viewModel.Items.remove(item);
-                }
+                };
             }
         });
     });
