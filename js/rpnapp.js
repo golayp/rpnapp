@@ -18,16 +18,10 @@ var rpnapp = (function() {
 
     var labels = {
         en: {
-            beforeUnloadMsg:'Data not saved. Are-you sure you want to quit?',
-            save:'Save',
-            drop:'Delete',
-            back:'Back'
+            beforeUnloadMsg:'Data not saved. Are-you sure you want to quit?'
         },
         fr: {
-            beforeUnloadMsg:'Données non sauvegardées. Êtes-vous sûr de vouloir quitter?',
-            save:'Sauvegarder',
-            drop:'Supprimer',
-            back:'Retour'
+            beforeUnloadMsg:'Données non sauvegardées. Êtes-vous sûr de vouloir quitter?'
         }
     };
 
@@ -39,21 +33,13 @@ var rpnapp = (function() {
         }
         _.defaults(options, {
             location:$('body'),
-            drop:function(){},
-            save:function(){},
-            back:function(){
-                window.history.go(-1);
-            },
             binded:function(){
-                log('model binded event');
             },
             addCustomBinding:function(vm){
-                
             },
             model:'model.json',
             modelKeyAttribute:'Id',
             track: true,
-            addToolbar:true,
             language: "en",
             debug: false
         });
@@ -69,71 +55,10 @@ var rpnapp = (function() {
                 }
             });
         }
-        buildUi();
-        bindUiEvents();
         loadModel();
         log('rpnapp successfully initied');
     };
     
-    var buildUi=function(){
-        //Based on convention
-        if(opts.addToolbar){
-            //toolbar is made of 3 buttons saveBtn and backBtn and dropBtn
-            var buildToolbar=false;
-            var toolbar=$('<div class="row"><div class="col-md-12"><div class="btn-toolbar"><div class="btn-group leftsided"></div><div class="btn-group pull-right"></div></div></div></div>');
-            
-            //BackBtn
-            if($('#backBtn').length){
-                backBtn=$('#backBtn');
-            }else{
-                backBtn=$('<button class="btn btn-default" id="backBtn"><span class="glyphicon glyphicon-chevron-left"></span>  '+lbls.back+'</button>');
-                toolbar.find('.btn-group.leftsided').append(backBtn);
-                buildToolbar=true;
-            }
-            if(opts.track){
-                //SaveBtn
-                if($('#saveBtn').length){
-                    saveBtn=$('#saveBtn');
-                }else{
-                    saveBtn=$('<button class="btn btn-primary" id="saveBtn" data-bind="enable: (tracker().somethingHasChanged() || '+opts.modelKeyAttribute+'()==0)"><span class="glyphicon glyphicon-save"></span> '+lbls.save+'</button>');
-                    toolbar.find('.btn-group.leftsided').append(saveBtn);
-                    buildToolbar=true;
-                }
-                
-                //DropBtn
-                if($('#dropBtn').length){
-                    dropBtn=$('#saveBtn');
-                }else{
-                    dropBtn=$('<button class="btn btn-danger" id="dropBtn" data-bind="enable: '+opts.modelKeyAttribute+'()!=0"><span class="glyphicon glyphicon-trash"></span> '+lbls.drop+'</button>');
-                    toolbar.find('.btn-group.pull-right').append(dropBtn);
-                    buildToolbar=true;
-                }
-            }
-            if(buildToolbar){
-                opts.location.append(toolbar);
-            }
-        }
-    };
-    
-    var bindUiEvents=function(){
-        if(opts.addToolbar){
-            backBtn.click(function(){
-                opts.back(getModel());
-            });
-            if(opts.track){
-                saveBtn.click(function(){
-                    if(opts.save(getModel())){
-                        viewModel.tracker().markCurrentStateAsClean();
-                    }
-                });
-                dropBtn.click(function(){
-                    launchModal(null,function(){
-                        opts.drop(getModel());
-                    });
-                });
-            }
-        }
-    };
     
     var loadModel=function(){
         //Model can be given directly
@@ -170,8 +95,8 @@ var rpnapp = (function() {
         log("model loaded successfully and binded to ui");
     };
     
-    var updateKeyAttribute = function(newKey){
-        viewModel[opts.modelKeyAttribute](newKey);
+    var rebindModel = function(mod){
+        viewModel = ko.mapping.fromJS(mod,viewModel);
     };
     
     var changeTracker=function(objectToTrack, hashFunction) {
@@ -237,7 +162,7 @@ var rpnapp = (function() {
     };
     
     return {
-        updateKeyAttribute:updateKeyAttribute,
+        rebindModel:rebindModel,
         launchModal:launchModal,
         getModel:getModel,
         markModelAsClean:markModelAsClean,
