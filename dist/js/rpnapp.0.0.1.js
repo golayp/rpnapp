@@ -18,16 +18,10 @@ var rpnapp = (function() {
 
     var labels = {
         en: {
-            beforeUnloadMsg:'Data not saved. Are-you sure you want to quit?',
-            save:'Save',
-            drop:'Delete',
-            back:'Back'
+            beforeUnloadMsg:'Data not saved. Are-you sure you want to quit?'
         },
         fr: {
-            beforeUnloadMsg:'Données non sauvegardées. Êtes-vous sûr de vouloir quitter?',
-            save:'Sauvegarder',
-            drop:'Supprimer',
-            back:'Retour'
+            beforeUnloadMsg:'Données non sauvegardées. Êtes-vous sûr de vouloir quitter?'
         }
     };
 
@@ -46,7 +40,6 @@ var rpnapp = (function() {
             model:'model.json',
             modelKeyAttribute:'Id',
             track: true,
-            addToolbar:true,
             language: "en",
             debug: false
         });
@@ -105,7 +98,9 @@ var rpnapp = (function() {
     var rebindModel = function(mod){
         viewModel = ko.mapping.fromJS(mod,viewModel);
     };
-    
+    var getViewModel=function(){
+        return viewModel;
+    }
     var changeTracker=function(objectToTrack, hashFunction) {
         hashFunction = hashFunction || ko.toJSON;
         var lastCleanState = ko.observable(hashFunction(objectToTrack));
@@ -169,6 +164,7 @@ var rpnapp = (function() {
     };
     
     return {
+        getViewModel:getViewModel,
         rebindModel:rebindModel,
         launchModal:launchModal,
         getModel:getModel,

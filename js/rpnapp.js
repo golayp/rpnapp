@@ -98,7 +98,9 @@ var rpnapp = (function() {
     var rebindModel = function(mod){
         viewModel = ko.mapping.fromJS(mod,viewModel);
     };
-    
+    var getViewModel=function(){
+        return viewModel;
+    }
     var changeTracker=function(objectToTrack, hashFunction) {
         hashFunction = hashFunction || ko.toJSON;
         var lastCleanState = ko.observable(hashFunction(objectToTrack));
@@ -162,6 +164,7 @@ var rpnapp = (function() {
     };
     
     return {
+        getViewModel:getViewModel,
         rebindModel:rebindModel,
         launchModal:launchModal,
         getModel:getModel,
