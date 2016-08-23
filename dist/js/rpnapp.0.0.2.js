@@ -37,6 +37,7 @@ var rpnapp = (function() {
             },
             addCustomBinding:function(vm){
             },
+            customMapping: {},
             model:'model.json',
             modelKeyAttribute:'Id',
             track: true,
@@ -85,7 +86,7 @@ var rpnapp = (function() {
     
     
     var bindModel=function(mod){
-        viewModel = ko.mapping.fromJS(mod);
+        viewModel = ko.mapping.fromJS(mod,opts.customMapping);
         opts.addCustomBinding(viewModel);
         if(opts.track){
             viewModel.tracker = new changeTracker(viewModel);
